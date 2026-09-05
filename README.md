@@ -1,1 +1,1 @@
-# Desarrollo Web - Tarea 1
+ Para esta tarea se utilizó un archivo CSS externo (estilos.css) para mantener separada la estructura HTML de los estilos de presentación. También se utilizaron archivos JavaScript independientes para implementar la funcionalidad de las distintas páginas.
