@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Registrar avistamiento</title>
+    <link rel="stylesheet" href="estilos.css">
+</head>
+
+<body>
+
+    <header>
+        <h1>Sistema de Avistamientos de Aves</h1>
+
+        <nav>
+             
+            <a href="voluntarios.html">Registrar voluntario</a>
+            <a href="avistamiento.html">Registrar avistamiento</a>
+            <a href="avistamientos.html">Consultar avistamientos</a>
+            <a href="indicadores.html">Indicadores</a>
+        </nav>
+    </header>
+
+    <main>
+        <section>
+            <h2>Registro de avistamiento</h2>
+
+            <form id="formulario-avistamiento">
+                <p>* Campos obligatorios</p>
+
+                <label for="tipo-ave">Tipo de ave: *</label>
+                <select id="tipo-ave">
+                    <option value="">Seleccione un tipo</option>
+                    <option value="rapaz">Ave rapaz</option>
+                    <option value="marina">Ave marina</option>
+                    <option value="acuática">Ave acuática</option>
+                    <option value="paseriforme">Paseriforme</option>
+                    <option value="otra">Otro</option>
+                </select>
+
+                <label for="nombre-ave">Nombre del ave: *</label>
+                <input type="text" id="nombre-ave">
+
+                <label for="lugar">Lugar del avistamiento: *</label>
+                <input type="text" id="lugar">
+
+                <label for="fecha">Fecha del avistamiento: *</label>
+                <input type="date" id="fecha">
+
+                <label for="hora">Hora del avistamiento: *</label>
+                <input type="time" id="hora">
+
+                <label for="foto">Fotografía:</label>
+                <input type="file" id="foto" accept="image/*">
+
+                <label for="video">Vídeo:</label>
+                <input type="file" id="video" accept="video/*">
+
+                <p>
+                    Debe agregar al menos una fotografía o un vídeo.
+                </p>
+
+                <button type="submit">Registrar avistamiento</button>
+
+            </form>
+        </section>
+    </main>
+
+    <footer>
+        <p>Sistema de Avistamientos de Aves</p>
+    </footer>
+
+    <script src="avistamiento.js"></script>
+
+</body>
+
+</html>
