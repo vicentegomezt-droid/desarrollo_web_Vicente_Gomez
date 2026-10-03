@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="card shadow-sm p-4 col-md-8 mx-auto">
+    <h2 class="mb-3 text-success">Registrar Avistamiento</h2>
+    <form method="POST">
+        <div class="mb-3">
+            <label class="form-label">Voluntario</label>
+            <select name="voluntario_id" class="form-select" required>
+                <option value="">Seleccionar Voluntario...</option>
+                {% for v in voluntarios %}
+                    <option value="{{ v.id }}">{{ v.nombre }} {{ v.apellido }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Tipo de Ave</label>
+            <select name="tipo_ave" class="form-select" required>
+                <option value="Cazadora">Cazadora</option>
+                <option value="Marina">Marina</option>
+                <option value="Terrestre">Terrestre</option>
+                <option value="Exótica">Exótica</option>
+            </select>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Nombre del Ave</label>
+            <select name="nombre_ave" class="form-select" required>
+                <option value="">Seleccionar Ave...</option>
+                {% for ave in aves %}
+                    <option value="{{ ave.nombre }}">{{ ave.nombre }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="mb-3">
+            <input type="text" name="lugar" class="form-control" placeholder="Lugar del avistamiento" required>
+        </div>
+        <div class="row mb-3">
+            <div class="col"><input type="date" name="fecha" class="form-control" required></div>
+            <div class="col"><input type="time" name="hora" class="form-control" required></div>
+        </div>
+        <button type="submit" class="btn btn-success w-100">Guardar Avistamiento</button>
+    </form>
+</div>
+{% endblock %}

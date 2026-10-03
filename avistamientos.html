@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Consultar avistamientos</title>
+    <link rel="stylesheet" href="estilos.css">
+</head>
+
+<body>
+
+    <header>
+        <h1>Sistema de Avistamientos de Aves</h1>
+
+        <nav>
+             
+            <a href="voluntarios.html">Registrar voluntario</a>
+            <a href="avistamiento.html">Registrar avistamiento</a>
+            <a href="avistamientos.html">Consultar avistamientos</a>
+            <a href="indicadores.html">Indicadores</a>
+        </nav>
+    </header>
+
+    <main>
+
+        <section>
+            <h2>Consultar avistamientos</h2>
+            <fieldset>
+                <legend>Opciones de consulta</legend>
+
+             
+
+                <label for="tipo-filtro">Filtrar por tipo de ave:</label>
+
+                <select id="tipo-filtro">
+                    <option value="">Todos los tipos</option>
+                    <option value="rapaz">Ave rapaz</option>
+                    <option value="marina">Ave marina</option>
+                    <option value="acuática">Ave acuática</option>
+                    <option value="paseriforme">Paseriforme</option>
+                    <option value="otra">Otro</option>
+                </select>
+
+                <label for="orden">Ordenar por:</label>
+
+                <select id="orden">
+                    <option value="">Sin ordenar</option>
+                    <option value="fecha-ascendente">Fecha: más antigua primero</option>
+                    <option value="fecha-descendente">Fecha: más reciente primero</option>
+                    <option value="lugar-ascendente">Lugar: A-Z</option>
+                </select>
+
+            </fieldset>
+        </section>
+
+
+        <section>
+            <h2>Resultados</h2>
+
+            <div id="resultados"></div>
+
+            <nav id="paginacion" aria-label="Paginación">
+            </nav>
+
+        </section>
+
+    </main>
+
+    <footer>
+        <p>Sistema de Avistamientos de Aves</p>
+    </footer>
+
+    <script src="avistamientos.js"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="card shadow-sm p-4 col-md-8 mx-auto">
+    <h2 class="mb-3 text-primary">Registro de Voluntario</h2>
+    <form method="POST">
+        <div class="row mb-3">
+            <div class="col"><input type="text" name="nombre" class="form-control" placeholder="Nombre" required></div>
+            <div class="col"><input type="text" name="apellido" class="form-control" placeholder="Apellido" required></div>
+        </div>
+        <div class="mb-3"><input type="email" name="email" class="form-control" placeholder="Correo Electrónico" required></div>
+        <div class="mb-3"><input type="text" name="telefono" class="form-control" placeholder="Teléfono (+56912345678)" required></div>
+        <div class="mb-3"><textarea name="direccion" class="form-control" placeholder="Dirección" required></textarea></div>
+        
+        <div class="row mb-3">
+            <div class="col">
+                <select name="region" id="region" class="form-select" required>
+                    <option value="">Selecciona Región...</option>
+                    {% for r in regiones %}
+                        <option value="{{ r.id }}">{{ r.nombre }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col">
+                <select name="comuna" id="comuna" class="form-select" required>
+                    <option value="">Selecciona Comuna...</option>
+                </select>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary w-100">Registrar Voluntario</button>
+    </form>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.getElementById('region').addEventListener('change', function() {
+        let regionId = this.value;
+        let comunaSelect = document.getElementById('comuna');
+        comunaSelect.innerHTML = '<option value="">Cargando comunas...</option>';
+
+        if (regionId) {
+            fetch('/get-comunas/' + regionId)
+                .then(response => response.json())
+                .then(data => {
+                    comunaSelect.innerHTML = '<option value="">Selecciona Comuna...</option>';
+                    data.forEach(c => {
+                        comunaSelect.innerHTML += `<option value="${c.id}">${c.nombre}</option>`;
+                    });
+                });
+        } else {
+            comunaSelect.innerHTML = '<option value="">Selecciona Comuna...</option>';
+        }
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="p-5 mb-4 bg-white rounded-3 shadow-sm text-center">
+    <h1 class="display-5 fw-bold text-success">Portal de Avistamiento de Aves</h1>
+    <p class="fs-4">Bienvenido a la plataforma para el registro de voluntariado y avistamientos en Chile.</p>
+    <div class="d-flex justify-content-center gap-3 mt-4">
+        <a href="{{ url_for('agregar_voluntario') }}" class="btn btn-primary btn-lg">Unirse como Voluntario</a>
+        <a href="{{ url_for('agregar_avistamiento') }}" class="btn btn-success btn-lg">Reportar Avistamiento</a>
+    </div>
+</div>
+{% endblock %} 

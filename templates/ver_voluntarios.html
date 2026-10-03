@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Listado de Voluntarios Registrados</h2>
+<table class="table table-striped table-bordered mt-3">
+    <thead class="table-dark">
+        <tr>
+            <th>Nombre</th>
+            <th>Email</th>
+            <th>Teléfono</th>
+            <th>Región</th>
+            <th>Comuna</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for v in voluntarios %}
+        <tr>
+            <td>{{ v.nombre }} {{ v.apellido }}</td>
+            <td>{{ v.email }}</td>
+            <td>{{ v.telefono }}</td>
+            <td>{{ v.region }}</td>
+            <td>{{ v.comuna }}</td>
+        </tr>
+        {% else %}
+        <tr><td colspan="5" class="text-center">No hay voluntarios registrados aún.</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
