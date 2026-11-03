@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container my-4">
+    <h2 class="mb-4 text-center">Panel de Estadísticas del Sistema</h2>
+    
+    <div class="row">
+        <!-- Gráfico de Líneas: Avistamientos por día -->
+        <div class="col-md-12 mb-4">
+            <div class="card p-3 shadow-sm">
+                <h4>Avistamientos Registrados por Día</h4>
+                <canvas id="graficoLineas" height="100"></canvas>
+            </div>
+        </div>
+
+        <!-- Gráfico de Torta: Avistamientos por tipo de ave -->
+        <div class="col-md-6 mb-4">
+            <div class="card p-3 shadow-sm">
+                <h4>Total de Avistamientos por Tipo de Ave</h4>
+                <canvas id="graficoTorta" height="200"></canvas>
+            </div>
+        </div>
+
+        <!-- Gráfico de Barras: Voluntarios por comuna -->
+        <div class="col-md-6 mb-4">
+            <div class="card p-3 shadow-sm">
+                <h4>Total de Voluntarios por Comuna</h4>
+                <canvas id="graficoBarras" height="200"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Enlace para volver a la portada según el enunciado -->
+    <div class="text-center mt-3">
+        <a href="{{ url_for('index') }}" class="btn btn-secondary">Volver a la Portada</a>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<!-- Librería Chart.js para renderizar los gráficos -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // 1. Gráfico de Líneas (Avistamientos por día)
+    fetch('/api/stats/avistamientos-dia')
+        .then(res => res.json())
+        .then(data => {
+            const labels = data.map(item => item.fecha);
+            const valores = data.map(item => item.total);
+            
+            new Chart(document.getElementById('graficoLineas'), {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Avistamientos',
+                        data: valores,
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        tension: 0.1
+                    }]
+                }
+            });
+        });
+
+    // 2. Gráfico de Torta (Avistamientos por tipo de ave)
+    fetch('/api/stats/tipo-ave')
+        .then(res => res.json())
+        .then(data => {
+            const labels = data.map(item => item.tipo);
+            const valores = data.map(item => item.total);
+            
+            new Chart(document.getElementById('graficoTorta'), {
+                type: 'pie',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: valores,
+                        backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0']
+                    }]
+                }
+            });
+        });
+
+    // 3. Gráfico de Barras (Voluntarios por comuna)
+    fetch('/api/stats/voluntarios-comuna')
+        .then(res => res.json())
+        .then(data => {
+            const labels = data.map(item => item.comuna);
+            const valores = data.map(item => item.total);
+            
+            new Chart(document.getElementById('graficoBarras'), {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Voluntarios',
+                        data: valores,
+                        backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        borderWidth: 1
+                    }]
+                }
+            });
+        });
+</script>
+{% endblock %}

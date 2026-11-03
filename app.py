@@ -140,3 +140,52 @@ def ver_avistamientos():
 
 if __name__ == '__main__':
     app.run(debug=True)
+
+ # ==========================================
+# RUTAS Y APIS PARA COMENTARIOS (TAREA 3)
+# ==========================================
+
+@app.route('/avistamiento/<int:id>')
+def detalle_avistamiento(id):
+    avistamiento = Avistamiento.query.get_or_404(id)
+    return render_template('detalle_avistamiento.html', avistamiento=avistamiento)
+
+@app.route('/api/avistamiento/<int:id>/comentarios')
+def get_comentarios(id):
+    comentarios = Comentario.query.filter_by(avistamiento_id=id).order_by(Comentario.fecha.desc()).all()
+    data = [{
+        'nombre': c.nombre,
+        'texto': c.texto,
+        'fecha': c.fecha.strftime('%d/%m/%Y %H:%M')
+    } for c in comentarios]
+    return jsonify(data)
+
+@app.route('/api/comentario/agregar', methods=['POST'])
+def agregar_comentario():
+    datos = request.get_json()
+    nombre = datos.get('nombre', '').strip()
+    texto = datos.get('texto', '').strip()
+    avistamiento_id = datos.get('avistamiento_id')
+
+    # Validaciones del servidor (Nombre: 3 a 50 caracteres; Texto: mínimo 5 caracteres)
+    if not nombre or len(nombre) < 3 or len(nombre) > 50:
+        return jsonify({'success': False, 'mensaje': 'El nombre debe tener entre 3 y 50 caracteres.'}), 400
+    
+    if not texto or len(texto) < 5:
+        return jsonify({'success': False, 'mensaje': 'El comentario debe tener al menos 5 caracteres.'}), 400
+
+    if not avistamiento_id:
+        return jsonify({'success': False, 'mensaje': 'Avistamiento no válido.'}), 400
+
+    try:
+        nuevo_comentario = Comentario(
+            nombre=nombre,
+            texto=texto,
+            avistamiento_id=avistamiento_id
+        )
+        db.session.add(nuevo_comentario)
+        db.session.commit()
+        return jsonify({'success': True, 'mensaje': 'Comentario agregado exitosamente.'})
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'success': False, 'mensaje': 'Error interno al guardar el comentario.'}), 500

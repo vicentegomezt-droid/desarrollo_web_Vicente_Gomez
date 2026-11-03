@@ -1,0 +1,148 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container my-4">
+    <!-- Información del Avistamiento -->
+    <div class="card shadow-sm p-4 mb-4">
+        <h2 class="text-success">Detalle del Avistamiento</h2>
+        <hr>
+        <p><strong>Ave:</strong> {{ avistamiento.nombre_ave }} ({{ avistamiento.tipo_ave }})</p>
+        <p><strong>Lugar:</strong> {{ avistamiento.lugar }}</p>
+        <p><strong>Fecha y Hora:</strong> {{ avistamiento.fecha.strftime('%d/%m/%Y') }} a las {{ avistamiento.hora.strftime('%H:%M') }}</p>
+        <p><strong>Registrado por:</strong> {{ avistamiento.voluntario.nombre }} {{ avistamiento.voluntario.apellido }}</p>
+    </div>
+
+    <!-- Sección de Comentarios -->
+    <div class="card shadow-sm p-4 mb-4">
+        <h3 class="mb-3">Comentarios</h3>
+        
+        <!-- Alerta para mensajes de error o éxito en JS -->
+        <div id="alerta-comentario" class="alert d-none" role="alert"></div>
+
+        <!-- Formulario para agregar comentario (Validaciones exigidas en el enunciado) -->
+        <form id="formComentario" class="mb-4">
+            <input type="hidden" id="avistamiento_id" value="{{ avistamiento.id }}">
+            
+            <div class="mb-3">
+                <label for="nombre" class="form-label">Nombre del Comentarista:</label>
+                <input type="text" id="nombre" class="form-control" minlength="3" maxlength="50" required placeholder="Ej: Juan Pérez">
+                <div class="form-text">Obligatorio, entre 3 y 50 caracteres.</div>
+            </div>
+
+            <div class="mb-3">
+                <label for="texto" class="form-label">Texto del Comentario:</label>
+                <textarea id="texto" class="form-control" rows="3" cols="40" minlength="5" required placeholder="Escribe tu comentario aquí..."></textarea>
+                <div class="form-text">Obligatorio, al menos 5 caracteres[cite: 2].</div>
+            </div>
+
+            <button type="submit" class="btn btn-success">Agregar comentario</button>
+        </form>
+
+        <hr>
+ 
+        <h4 class="mb-3">Listado de Comentarios Asociados</h4>
+        <div id="lista-comentarios">
+            <p class="text-muted">Cargando comentarios...</p>
+        </div>
+    </div>
+
+    <div class="text-center">
+        <a href="{{ url_for('ver_avistamientos') }}" class="btn btn-secondary">Volver al listado de avistamientos</a>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    const avistamientoId = document.getElementById('avistamiento_id').value;
+    const listaComentariosDiv = document.getElementById('lista-comentarios');
+    const formComentario = document.getElementById('formComentario');
+    const alertaComentario = document.getElementById('alerta-comentario');
+
+    // Función para cargar los comentarios de forma asíncrona usando fetch[cite: 2]
+    function cargarComentarios() {
+        fetch(`/api/avistamiento/${avistamientoId}/comentarios`)
+            .then(res => res.json())
+            .then(data => {
+                if (data.length === 0) {
+                    listaComentariosDiv.innerHTML = '<p class="text-muted">No hay comentarios para este avistamiento todavía.</p>';
+                    return;
+                }
+
+                let html = '<ul class="list-group">';
+                data.forEach(c => {
+                    html += `
+                        <li class="list-group-item">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h5 class="mb-1">${c.nombre}</h5>
+                                <small class="text-muted">${c.fecha}</small>
+                            </div>
+                            <p class="mb-1">${c.texto}</p>
+                        </li>
+                    `;
+                });
+                html += '</ul>';
+                listaComentariosDiv.innerHTML = html;
+            })
+            .catch(err => {
+                listaComentariosDiv.innerHTML = '<p class="text-danger">Error al cargar los comentarios.</p>';
+            });
+    }
+
+    // Cargar comentarios al abrir la página
+    cargarComentarios();
+ 
+    formComentario.addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const nombre = document.getElementById('nombre').value.trim();
+        const texto = document.getElementById('texto').value.trim();
+
+        // Validaciones del lado del cliente antes de enviar
+        if (nombre.length < 3 || nombre.length > 50) {
+            mostrarAlerta('El nombre debe tener entre 3 y 50 caracteres.', 'danger');
+            return;
+        }
+        if (texto.length < 5) {
+            mostrarAlerta('El comentario debe tener al menos 5 caracteres.', 'danger');
+            return;
+        }
+ 
+        fetch('/api/comentario/agregar', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                nombre: nombre,
+                texto: texto,
+                avistamiento_id: avistamientoId
+            })
+        })
+        .then(res => res.json().then(data => ({ status: res.status, body: data })))
+        .then(response => {
+            if (response.status === 200 && response.body.success) {
+                mostrarAlerta(response.body.mensaje, 'success');
+                formComentario.reset(); // Limpiar formulario si fue exitoso
+                cargarComentarios();     // Recargar la lista en vivo
+            } else {
+                mostrarAlerta(response.body.mensaje || 'Error al guardar el comentario.', 'danger');
+            }
+        })
+        .catch(err => {
+            mostrarAlerta('Error de conexión con el servidor.', 'danger');
+        });
+    });
+
+    function mensajeAlerta(texto, tipo) {
+        alertaComentario.className = `alert alert-${tipo}`;
+        alertaComentario.textContent = texto;
+        alertaComentario.classList.remove('d-none');
+    }
+    
+     
+    function mostrarAlerta(texto, tipo) {
+        mensajeAlerta(texto, tipo);
+    }
+</script>
+{% endblock %}

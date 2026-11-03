@@ -11,6 +11,7 @@
             <th>Lugar</th>
             <th>Fecha</th>
             <th>Hora</th>
+            <th>Acción</th>
         </tr>
     </thead>
     <tbody>
@@ -22,10 +23,17 @@
             <td>{{ a.lugar }}</td>
             <td>{{ a.fecha.strftime('%d/%m/%Y') }}</td>
             <td>{{ a.hora.strftime('%H:%M') }}</td>
+            <td>
+                <!-- Enlace al detalle del avistamiento -->
+                <a href="{{ url_for('detalle_avistamiento', id=a.id) }}" class="btn btn-sm btn-primary">Ver Comentarios</a>
+            </td>
         </tr>
         {% else %}
-        <tr><td colspan="6" class="text-center">No hay avistamientos registrados aún.</td></tr>
+        <tr><td colspan="7" class="text-center">No hay avistamientos registrados aún.</td></tr>
         {% endfor %}
     </tbody>
 </table>
+<div class="text-center mt-3">
+    <a href="{{ url_for('index') }}" class="btn btn-secondary">Volver a la Portada</a>
+</div>
 {% endblock %}
