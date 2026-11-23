@@ -53,3 +53,12 @@ class Comentario(db.Model):
     avistamiento_id = db.Column(db.Integer, db.ForeignKey('avistamiento.id'), nullable=False)
 
     avistamiento = db.relationship('Avistamiento', backref='comentarios')
+
+class Registro(db.Model):
+    __tablename__ = 'registro'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    avistamiento_id = db.Column(db.Integer, db.ForeignKey('avistamiento.id'), nullable=False)
+    ruta_archivo = db.Column(db.String(255), nullable=False)
+    tipo_archivo = db.Column(db.String(50), nullable=True)
+
+    avistamiento = db.relationship('Avistamiento', backref=db.backref('registros', lazy=True))

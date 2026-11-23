@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="card shadow-sm p-4 col-md-8 mx-auto">
+    <h2 class="mb-3 text-success">Registrar Avistamiento</h2>
+
+    <div id="js-error-box" class="alert alert-danger d-none" role="alert"></div>
+
+    <form id="form-avistamiento" method="POST" enctype="multipart/form-data" novalidate>
+        <div class="mb-3">
+            <label for="voluntario_id" class="form-label">Voluntario</label>
+            <select id="voluntario_id" name="voluntario_id" class="form-select" required>
+                <option value="">Seleccionar Voluntario...</option>
+                {% for v in voluntarios %}
+                    <option value="{{ v.id }}" {% if form_data and form_data.get('voluntario_id')|string == v.id|string %}selected{% endif %}>
+                        {{ v.nombre }} {{ v.apellido }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label for="tipo_ave" class="form-label">Tipo de Ave</label>
+            <select id="tipo_ave" name="tipo_ave" class="form-select" required>
+                <option value="">Seleccionar Tipo...</option>
+                {% for tipo in ['Cazadora', 'Marina', 'Terrestre', 'Exótica'] %}
+                    <option value="{{ tipo }}" {% if form_data and form_data.get('tipo_ave') == tipo %}selected{% endif %}>
+                        {{ tipo }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label for="nombre_ave" class="form-label">Nombre del Ave</label>
+            <select id="nombre_ave" name="nombre_ave" class="form-select" required>
+                <option value="">Seleccionar Ave...</option>
+                {% for ave in aves %}
+                    <option value="{{ ave.nombre }}" {% if form_data and form_data.get('nombre_ave') == ave.nombre %}selected{% endif %}>
+                        {{ ave.nombre }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label for="lugar" class="form-label">Lugar del avistamiento</label>
+            <input type="text" id="lugar" name="lugar" class="form-control" placeholder="Lugar del avistamiento" value="{{ form_data.get('lugar', '') if form_data else '' }}" required>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col">
+                <label for="fecha" class="form-label">Fecha</label>
+                <input type="date" id="fecha" name="fecha" class="form-control" value="{{ form_data.get('fecha', '') if form_data else '' }}" required>
+            </div>
+            <div class="col">
+                <label for="hora" class="form-label">Hora</label>
+                <input type="time" id="hora" name="hora" class="form-control" value="{{ form_data.get('hora', '') if form_data else '' }}" required>
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <label for="archivo" class="form-label">Fotografía o Video del Avistamiento</label>
+            <input type="file" id="archivo" name="archivo" class="form-control" accept="image/*,video/*" required>
+        </div>
+
+        <button type="submit" class="btn btn-success w-100">Guardar Avistamiento</button>
+    </form>
+</div>
+
+<script src="{{ url_for('static', filename='js/validar_avistamiento.js') }}"></script>
+{% endblock %}

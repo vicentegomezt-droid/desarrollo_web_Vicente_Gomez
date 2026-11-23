@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avistamientos y Evaluación - Tarea 4</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 24px;
+            background-color: #f7f9fb;
+            color: #1f2937;
+        }
+        .contenedor {
+            max-width: 1050px;
+            margin: 0 auto;
+            background: #ffffff;
+            padding: 24px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+        h1 {
+            margin-top: 0;
+            font-size: 1.5rem;
+        }
+        .buscador-box {
+            margin-bottom: 16px;
+        }
+        .buscador-box input {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 10px 12px;
+            font-size: 1rem;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+        }
+        .mensaje-estado {
+            margin-bottom: 14px;
+            min-height: 22px;
+            font-size: 0.95rem;
+        }
+        .mensaje-error {
+            color: #b91c1c;
+            font-weight: bold;
+        }
+        .mensaje-vacio {
+            color: #4b5563;
+            font-style: italic;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 10px 12px;
+            border-bottom: 1px solid #e5e7eb;
+            text-align: left;
+            vertical-align: middle;
+        }
+        th {
+            background-color: #f1f5f9;
+        }
+        mark {
+            background-color: #fde047;
+            color: #111827;
+            padding: 1px 2px;
+            border-radius: 2px;
+        }
+        .evaluar-form {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+        }
+        .evaluar-form input[type="number"] {
+            width: 64px;
+            padding: 6px;
+            border: 1px solid #cbd5e1;
+            border-radius: 4px;
+        }
+        .evaluar-form button {
+            padding: 6px 10px;
+            background-color: #2563eb;
+            color: #ffffff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .evaluar-form button:hover {
+            background-color: #1d4ed8;
+        }
+    </style>
+</head>
+<body>
+<div class="contenedor">
+    <h1>Buscador Reactivo de Avistamientos y Notas</h1>
+
+    <div class="buscador-box">
+        <input
+                type="text"
+                id="buscadorInput"
+                placeholder="Buscar por ave, voluntario o comuna..."
+                autocomplete="off"
+        />
+    </div>
+
+    <div id="mensajeEstado" class="mensaje-estado"></div>
+
+    <table>
+        <thead>
+        <tr>
+            <th>Día</th>
+            <th>Ave</th>
+            <th>Voluntario</th>
+            <th>Comuna</th>
+            <th>Promedio Nota</th>
+            <th>Evaluar (1 a 7)</th>
+        </tr>
+        </thead>
+        <tbody id="tablaCuerpo"></tbody>
+    </table>
+</div>
+
+<script src="/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,120 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="card shadow-sm p-4 col-md-8 mx-auto">
+    <h2 class="mb-3 text-primary">Registro de Voluntario</h2>
+
+    <div id="js-error-box-voluntario" class="alert alert-danger d-none" role="alert"></div>
+
+    <form id="form-voluntario" method="POST" novalidate>
+        <div class="row mb-3">
+            <div class="col">
+                <input type="text" id="nombre" name="nombre" class="form-control" placeholder="Nombre" value="{{ form_data.get('nombre', '') if form_data else '' }}" required>
+            </div>
+            <div class="col">
+                <input type="text" id="apellido" name="apellido" class="form-control" placeholder="Apellido" value="{{ form_data.get('apellido', '') if form_data else '' }}" required>
+            </div>
+        </div>
+        <div class="mb-3">
+            <input type="email" id="email" name="email" class="form-control" placeholder="Correo Electrónico" value="{{ form_data.get('email', '') if form_data else '' }}" required>
+        </div>
+        <div class="mb-3">
+            <input type="text" id="telefono" name="telefono" class="form-control" placeholder="Teléfono (+56912345678)" value="{{ form_data.get('telefono', '') if form_data else '' }}" required>
+        </div>
+        <div class="mb-3">
+            <textarea id="direccion" name="direccion" class="form-control" placeholder="Dirección" required>{{ form_data.get('direccion', '') if form_data else '' }}</textarea>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col">
+                <select name="region" id="region" class="form-select" data-selected="{{ form_data.get('region', '') if form_data else '' }}" required>
+                    <option value="">Selecciona Región...</option>
+                    {% for r in regiones %}
+                        <option value="{{ r.id }}" {% if form_data and form_data.get('region')|string == r.id|string %}selected{% endif %}>
+                            {{ r.nombre }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col">
+                <select name="comuna" id="comuna" class="form-select" data-selected="{{ form_data.get('comuna', '') if form_data else '' }}" required>
+                    <option value="">Selecciona Comuna...</option>
+                </select>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary w-100">Registrar Voluntario</button>
+    </form>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    const regionSelect = document.getElementById('region');
+    const comunaSelect = document.getElementById('comuna');
+    const formVoluntario = document.getElementById('form-voluntario');
+    const errorBoxVol = document.getElementById('js-error-box-voluntario');
+
+    function cargarComunas(regionId, comunaSeleccionada = '') {
+        comunaSelect.innerHTML = '<option value="">Cargando comunas...</option>';
+        if (regionId) {
+            fetch('/get-comunas/' + regionId)
+                .then(response => response.json())
+                .then(data => {
+                    comunaSelect.innerHTML = '<option value="">Selecciona Comuna...</option>';
+                    data.forEach(c => {
+                        const selected = String(c.id) === String(comunaSeleccionada) ? 'selected' : '';
+                        comunaSelect.innerHTML += `<option value="${c.id}" ${selected}>${c.nombre}</option>`;
+                    });
+                });
+        } else {
+            comunaSelect.innerHTML = '<option value="">Selecciona Comuna...</option>';
+        }
+    }
+
+    regionSelect.addEventListener('change', function () {
+        cargarComunas(this.value, '');
+    });
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const regionInicial = regionSelect.dataset.selected;
+        const comunaInicial = comunaSelect.dataset.selected;
+        if (regionInicial) {
+            cargarComunas(regionInicial, comunaInicial);
+        }
+    });
+
+    formVoluntario.addEventListener('submit', function (event) {
+        const errores = [];
+        const nombre = document.getElementById('nombre').value.trim();
+        const apellido = document.getElementById('apellido').value.trim();
+        const email = document.getElementById('email').value.trim();
+        const telefono = document.getElementById('telefono').value.trim();
+        const direccion = document.getElementById('direccion').value.trim();
+        const region = regionSelect.value.trim();
+        const comuna = comunaSelect.value.trim();
+
+        if (!nombre || !apellido) {
+            errores.push("El nombre y el apellido son obligatorios.");
+        }
+        if (!email || !/^[^@]+@[^@]+\.[^@]+$/.test(email)) {
+            errores.push("Ingresa un correo electrónico válido.");
+        }
+        if (!telefono || !/^\+?\d{8,15}$/.test(telefono)) {
+            errores.push("Ingresa un número de teléfono válido.");
+        }
+        if (!direccion || !region || !comuna) {
+            errores.push("Debe completar todos los campos de ubicación.");
+        }
+
+        if (errores.length > 0) {
+            event.preventDefault();
+            errorBoxVol.innerHTML = "<ul class='mb-0'>" + errores.map(e => `<li>${e}</li>`).join("") + "</ul>";
+            errorBoxVol.classList.remove("d-none");
+            errorBoxVol.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        } else {
+            errorBoxVol.innerHTML = "";
+            errorBoxVol.classList.add("d-none");
+        }
+    });
+</script>
+{% endblock %}
